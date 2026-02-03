@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>made by bimaaa</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --bg:#0a0a0a;
+  --panel:#111;
+  --muted:#9a9a9a;
+  --text:#fff;
+  --accent:#fff;
+  --radius:18px;
+}
+
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:Poppins,system-ui;
+  background:radial-gradient(circle at top,#111,#000 70%);
+  color:var(--text);
+}
+
+.container{
+  max-width:900px;
+  margin:32px auto;
+  padding:24px;
+  display:grid;
+  grid-template-columns:280px 1fr;
+  gap:24px;
+}
+
+.card{
+  background:linear-gradient(180deg,#121212,#0a0a0a);
+  border-radius:var(--radius);
+  padding:20px;
+  box-shadow:0 20px 40px rgba(0,0,0,.8);
+}
+
+/* COVER */
+.cover{
+  width:100%;
+  aspect-ratio:1/1;
+  border-radius:14px;
+  object-fit:cover;
+  box-shadow:0 18px 40px rgba(0,0,0,.7);
+}
+
+.meta{
+  margin-top:14px;
+}
+.meta h2{
+  margin:0;
+  font-size:18px;
+}
+.meta p{
+  margin:4px 0 0;
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* PLAYER */
+.progress-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:12px;
+}
+.time{
+  font-size:12px;
+  color:var(--muted);
+  width:42px;
+  text-align:center;
+}
+.progress{
+  flex:1;
+  height:6px;
+  background:#222;
+  border-radius:999px;
+  cursor:pointer;
+}
+.bar{
+  height:100%;
+  width:0%;
+  background:#fff;
+  border-radius:999px;
+}
+
+/* CONTROLS */
+.controls{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:22px;
+  margin:18px 0;
+}
+.btn{
+  background:none;
+  border:none;
+  cursor:pointer;
+  color:#bbb;
+  transition:.2s;
+}
+.btn:hover{color:#fff; transform:scale(1.08)}
+.btn-play{
+  width:64px;
+  height:64px;
+  border-radius:50%;
+  background:#fff;
+  color:#000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* LYRICS */
+.lyrics{
+  max-height:240px;
+  overflow:auto;
+  padding-right:6px;
+}
+.line{
+  padding:8px 4px;
+  color:#888;
+  transition:.2s;
+  cursor:pointer;
+}
+.line.active{
+  color:#fff;
+  font-weight:600;
+}
+.line:hover{color:#fff}
+
+/* MOBILE */
+@media(max-width:850px){
+  .container{grid-template-columns:1fr}
+}
+.lyrics{
+  scroll-behavior: smooth;
+}
+
+.line{
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  padding:8px 4px;
+  color:#888;
+  opacity:0;
+  transform:translateY(15px);
+  transition:opacity .3s ease, transform .3s ease;
+}
+
+.line.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.line.active{
+  color:#fff;
+  font-weight:600;
+}
+
+
+.lyrics{
+  position:relative;
+  height:120px;
+  overflow:hidden;
+}
+
+</style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- LEFT -->
+  <div class="card">
+    <img class="cover" src="ab67616d0000b273755b2dd9ca03d7c69e6cefd8.jpg">
+    <div class="meta">
+      <h2>Menerima Luka</h2>
+      <p>Natasya Sabella</p>
+    </div>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="card">
+
+    <!-- PROGRESS -->
+    <div class="progress-row">
+      <div class="time" id="cur">0:00</div>
+      <div class="progress" id="progress"><div class="bar" id="bar"></div></div>
+      <div class="time" id="dur">0:00</div>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="controls">
+      <button class="btn" id="prev">
+        <!-- PREV ICON -->
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M6 19V5h2v14H6zm12.5-7L9 5v14l9.5-7z"/>
+        </svg>
+      </button>
+
+      <button class="btn-play" id="play">
+        <svg id="playIcon" width="28" height="28" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z"/>
+        </svg>
+      </button>
+
+      <button class="btn" id="next">
+        <!-- NEXT ICON -->
+        <svg width="22" height="22" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M16 5v14h2V5h-2zM6 12l9.5 7V5L6 12z"/>
+        </svg>
+      </button>
+    </div>
+
+    <!-- LYRICS -->
+    <div class="lyrics" id="lyrics">
+      <div class="line" data-time="0">Ho hoHo-ho-ho-ho-ho-wo-ho</div>
+      <div class="line" data-time="5">Walau tak ku pungkiri <br>
+Sakitnya buatku hancur sekali</div>
+      <div class="line" data-time="13">Bagaimana bisa  tuhan 
+      persatukan, Lalu dipisahkan</div>
+      <div class="line" data-time="21">Untuk apa cinta <br>
+      Tapi akhirnya luka</div>
+      <div class="line" data-time="30">🎵</div>
+    </div>
+
+  </div>
+</div>
+
+<audio id="audio" src="SnapTik.Net_7587254419725520149.mp3"></audio>
+
+<script>
+const audio=document.getElementById("audio");
+const play=document.getElementById("play");
+const playIcon=document.getElementById("playIcon");
+const bar=document.getElementById("bar");
+const progress=document.getElementById("progress");
+const cur=document.getElementById("cur");
+const dur=document.getElementById("dur");
+const lines=[...document.querySelectorAll(".line")];
+
+function fmt(t){
+  const m=Math.floor(t/60);
+  const s=Math.floor(t%60).toString().padStart(2,"0");
+  return `${m}:${s}`;
+}
+
+play.onclick=()=>{
+  if(audio.paused){
+    audio.play();
+    playIcon.innerHTML='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+  }else{
+    audio.pause();
+    playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';
+  }
+};
+
+audio.onloadedmetadata=()=>dur.textContent=fmt(audio.duration);
+
+audio.ontimeupdate = () => {
+  cur.textContent = fmt(audio.currentTime);
+  bar.style.width = (audio.currentTime / audio.duration * 100) + "%";
+
+  lines.forEach((line, i) => {
+    const start = Number(line.dataset.time);
+    const end = i + 1 < lines.length
+      ? Number(lines[i + 1].dataset.time)
+      : 9999;
+
+    const active = audio.currentTime >= start && audio.currentTime < end;
+
+    line.classList.remove("show", "active");
+
+    if (active) {
+      line.classList.add("show", "active");
+    }
+  });
+};
+
+
+progress.onclick=e=>{
+  const r=progress.getBoundingClientRect();
+  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+};
+
+lines.forEach(l=>{
+  l.onclick=()=>{
+    audio.currentTime=Number(l.dataset.time);
+    audio.play();
+  }
+});
+</script>
+
+</body>
+</html>
