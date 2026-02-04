@@ -172,6 +172,13 @@ body{
   overflow:hidden;
 }
 
+.line i{
+  color:#aaa;
+  font-size:13px;
+  display:block;
+  margin-top:2px;
+}
+
 </style>
 </head>
 <body>
@@ -238,22 +245,111 @@ Sakitnya buatku hancur sekali</div>
 <audio id="audio" src="SnapTik.Net_7587254419725520149.mp3"></audio>
 
 <script>
-const audio=document.getElementById("audio");
-const play=document.getElementById("play");
-const playIcon=document.getElementById("playIcon");
-const bar=document.getElementById("bar");
-const progress=document.getElementById("progress");
-const cur=document.getElementById("cur");
-const dur=document.getElementById("dur");
-const lines=[...document.querySelectorAll(".line")];
+const audio = document.getElementById("audio");
+const play = document.getElementById("play");
+const playIcon = document.getElementById("playIcon");
+const bar = document.getElementById("bar");
+const progress = document.getElementById("progress");
+const cur = document.getElementById("cur");
+const dur = document.getElementById("dur");
+const lyricsBox = document.getElementById("lyrics");
 
+let currentSong = 0;
+
+/* ===== PLAYLIST ===== */
+const songs = [
+  {
+    title: "Menerima Luka",
+    artist: "Natasya Sabella",
+    src: "SnapTik.Net_7587254419725520149.mp3",
+    cover: "ab67616d0000b273755b2dd9ca03d7c69e6cefd8.jpg",
+    lyrics: [
+      { time: 0, text: "Ho hoHo-ho-ho-ho-ho-wo-ho" },
+      { time: 5, text: "Walau tak ku pungkiri<br>Sakitnya buatku hancur sekali" },
+      { time: 13, text: "Bagaimana bisa tuhan persatukan, Lalu dipisahkan" },
+      { time: 21, text: "Untuk apa cinta<br>Tapi akhirnya luka" },
+      { time: 30, text: "🎵" }
+    ]
+  },
+  {
+    title: "Strong",
+    artist: "One Direction",
+    src: "SnapTik.Net_7514304743565446456.mp3",
+    cover: "images.jpg",
+    lyrics: [
+
+{ 
+  time: 0, text: `` },
+  
+ { time: 1, text: `Cause when I'm not with you, I'm weaker<br><i>Karena ketika aku tidak bersamamu, aku lebih lemah</i>` },
+
+{ time: 4, text: `Is that so wrong?<br><i>Apakah itu salah?</i>` },
+
+{ time: 6, text: `Is it so wrong?<br><i>Apakah itu salah?</i>` },
+
+{ time: 9, text: `I'm sorry if I say, "I need you"<br><i>Aku minta maaf jika aku berkata, <br>
+"Aku membutuhkanmu"</i>` },
+
+{ time: 13, text: `But I don't care, <br>
+I'm not scared of love<br><i>Tapi aku tidak peduli, <br>
+aku tidak takut pada cinta</i>` },
+
+{ time: 17, text: `'Cause when I'm not with you, I'm weaker<br><i>Karena ketika aku tidak bersamamu, aku lebih lemah</i>` },
+
+{ time: 20, text: `Is that so wrong?<br><i>Apakah itu salah?</i>` },
+
+{ time: 21, text: `Is it so wrong?<br><i>Apakah itu salah?</i>` },
+
+{ time: 23, text: `That you make me...<br><i>Bahwa kamu membuatku...</i>` },
+
+{ time: 24, text: `I'm sorry if I say, "I need you"<br><i>Aku minta maaf jika aku berkata,<br>
+"Aku membutuhkanmu"</i>` },
+
+{ time: 28, text: `But I don't care, <br>
+I'm not scared of love<br><i>Tapi aku tidak peduli, <br>
+aku tidak takut pada cinta</i>` },
+
+{ time: 32, text: `'Cause when I'm not with you, I'm weaker<br><i>Karena ketika aku tidak bersamamu, aku lebih lemah</i>` },
+
+{ time: 35, text: `Is that so wrong?<br><i>Apakah itu salah?</i>` },
+
+{ time: 36, text: `Is it so wrong?<br><i>Apakah itu salah?</i>` },
+
+{ time: 38, text: `That you make me strong?<br><i>Bahwa kamu membuatku kuat?</i>` }
+
+]
+
+  }
+];
+
+/* ===== LOAD SONG ===== */
+function loadSong(index){
+  const song = songs[index];
+  audio.src = song.src;
+
+  document.querySelector(".meta h2").innerText = song.title;
+  document.querySelector(".meta p").innerText = song.artist;
+  document.querySelector(".cover").src = song.cover;
+
+  lyricsBox.innerHTML = "";
+  song.lyrics.forEach(l=>{
+    const div = document.createElement("div");
+    div.className = "line";
+    div.dataset.time = l.time;
+    div.innerHTML = l.text;
+    lyricsBox.appendChild(div);
+  });
+}
+
+/* ===== FORMAT TIME ===== */
 function fmt(t){
-  const m=Math.floor(t/60);
-  const s=Math.floor(t%60).toString().padStart(2,"0");
+  const m = Math.floor(t / 60);
+  const s = Math.floor(t % 60).toString().padStart(2,"0");
   return `${m}:${s}`;
 }
 
-play.onclick=()=>{
+/* ===== PLAY / PAUSE ===== */
+play.onclick = () => {
   if(audio.paused){
     audio.play();
     playIcon.innerHTML='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
@@ -263,41 +359,58 @@ play.onclick=()=>{
   }
 };
 
-audio.onloadedmetadata=()=>dur.textContent=fmt(audio.duration);
+/* ===== NEXT / PREV ===== */
+document.getElementById("next").onclick = () => {
+  currentSong = (currentSong + 1) % songs.length;
+  loadSong(currentSong);
+  audio.play();
+  playIcon.innerHTML='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+};
+
+document.getElementById("prev").onclick = () => {
+  currentSong = (currentSong - 1 + songs.length) % songs.length;
+  loadSong(currentSong);
+  audio.play();
+  playIcon.innerHTML='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+};
+
+
+/* ===== PROGRESS & LYRICS ===== */
+audio.onloadedmetadata = () => dur.textContent = fmt(audio.duration);
 
 audio.ontimeupdate = () => {
   cur.textContent = fmt(audio.currentTime);
   bar.style.width = (audio.currentTime / audio.duration * 100) + "%";
 
+  const lines = [...document.querySelectorAll(".line")];
   lines.forEach((line, i) => {
     const start = Number(line.dataset.time);
-    const end = i + 1 < lines.length
-      ? Number(lines[i + 1].dataset.time)
-      : 9999;
-
-    const active = audio.currentTime >= start && audio.currentTime < end;
-
-    line.classList.remove("show", "active");
-
-    if (active) {
-      line.classList.add("show", "active");
+    const end = i+1 < lines.length ? Number(lines[i+1].dataset.time) : 9999;
+    line.classList.remove("show","active");
+    if(audio.currentTime >= start && audio.currentTime < end){
+      line.classList.add("show","active");
     }
   });
 };
 
-
-progress.onclick=e=>{
-  const r=progress.getBoundingClientRect();
-  audio.currentTime=((e.clientX-r.left)/r.width)*audio.duration;
+progress.onclick = e => {
+  const r = progress.getBoundingClientRect();
+  audio.currentTime = ((e.clientX - r.left) / r.width) * audio.duration;
 };
 
-lines.forEach(l=>{
-  l.onclick=()=>{
-    audio.currentTime=Number(l.dataset.time);
-    audio.play();
-  }
-});
+/* ===== INIT ===== */
+loadSong(currentSong);
+
+audio.onplay = () => {
+  playIcon.innerHTML='<path d="M6 5h4v14H6zm8 0h4v14h-4z"/>';
+};
+
+audio.onpause = () => {
+  playIcon.innerHTML='<path d="M8 5v14l11-7z"/>';
+};
+
 </script>
+
 
 </body>
 </html>
